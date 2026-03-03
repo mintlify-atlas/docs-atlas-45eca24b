@@ -1,0 +1,405 @@
+---
+title: Customization
+description: Customize colors, fonts, backgrounds, and window chrome in VSCode Typing Simulator
+---
+
+## Overview
+
+VSCode Typing Simulator is highly customizable. You can modify colors, fonts, backgrounds, and window appearance to match your preferred style or branding.
+
+## Color Scheme Customization
+
+All colors are defined as RGB tuples at the top of `vscode_mockup.py`.
+
+### Default Color Scheme
+
+```python vscode_mockup.py
+# Colores
+BACKGROUND = (30, 30, 30)  # Fondo oscuro de VSCode
+TEXT_COLOR = (220, 220, 220)  # Color del texto
+LINE_NUMBER_COLOR = (100, 100, 100)  # Color de números de línea
+TITLE_BAR_COLOR = (50, 50, 50)  # Color de la barra de título
+DESKTOP_COLOR = (0, 122, 204)  # Color azul característico de Windows/macOS
+```
+
+### Color Reference Table
+
+| Constant | RGB Value | Hex | Description |
+|----------|-----------|-----|-------------|
+| `BACKGROUND` | `(30, 30, 30)` | `#1E1E1E` | VSCode editor dark background |
+| `TEXT_COLOR` | `(220, 220, 220)` | `#DCDCDC` | Code text color |
+| `LINE_NUMBER_COLOR` | `(100, 100, 100)` | `#646464` | Line number gutter color |
+| `TITLE_BAR_COLOR` | `(50, 50, 50)` | `#323232` | Window title bar background |
+| `DESKTOP_COLOR` | `(0, 122, 204)` | `#007ACC` | Desktop fallback (if no image) |
+
+### Popular Theme Examples
+
+Customize the colors to match popular VSCode themes:
+
+<Tabs>
+  <Tab title="Dark+ (Default)">
+    ```python vscode_mockup.py
+    BACKGROUND = (30, 30, 30)
+    TEXT_COLOR = (220, 220, 220)
+    LINE_NUMBER_COLOR = (100, 100, 100)
+    TITLE_BAR_COLOR = (50, 50, 50)
+    ```
+  </Tab>
+
+  <Tab title="Monokai">
+    ```python vscode_mockup.py
+    BACKGROUND = (39, 40, 34)       # #272822
+    TEXT_COLOR = (248, 248, 242)    # #F8F8F2
+    LINE_NUMBER_COLOR = (117, 113, 94)  # #75715E
+    TITLE_BAR_COLOR = (30, 31, 26)
+    ```
+  </Tab>
+
+  <Tab title="Dracula">
+    ```python vscode_mockup.py
+    BACKGROUND = (40, 42, 54)       # #282A36
+    TEXT_COLOR = (248, 248, 242)    # #F8F8F2
+    LINE_NUMBER_COLOR = (98, 114, 164)  # #6272A4
+    TITLE_BAR_COLOR = (33, 34, 44)
+    ```
+  </Tab>
+
+  <Tab title="Light+">
+    ```python vscode_mockup.py
+    BACKGROUND = (255, 255, 255)    # #FFFFFF
+    TEXT_COLOR = (0, 0, 0)          # #000000
+    LINE_NUMBER_COLOR = (128, 128, 128)  # #808080
+    TITLE_BAR_COLOR = (230, 230, 230)
+    DESKTOP_COLOR = (240, 240, 240)
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  RGB values in Python are tuples with values from 0-255 for each color channel (Red, Green, Blue).
+</Note>
+
+## Window Chrome Customization
+
+The window control buttons use macOS-style colored circles.
+
+### Button Colors
+
+```python vscode_mockup.py
+# Window control buttons colors
+self.close_button_color = (232, 17, 35)
+self.minimize_button_color = (255, 185, 0)
+self.maximize_button_color = (0, 204, 0)
+```
+
+| Button | RGB Value | Hex | Description |
+|--------|-----------|-----|-------------|
+| Close | `(232, 17, 35)` | `#E81123` | Red button |
+| Minimize | `(255, 185, 0)` | `#FFB900` | Yellow/amber button |
+| Maximize | `(0, 204, 0)` | `#00CC00` | Green button |
+
+### Customizing Button Colors
+
+<CodeGroup>
+```python macOS Style (Default)
+self.close_button_color = (232, 17, 35)
+self.minimize_button_color = (255, 185, 0)
+self.maximize_button_color = (0, 204, 0)
+```
+
+```python Authentic macOS Colors
+self.close_button_color = (255, 95, 86)      # #FF5F56
+self.minimize_button_color = (255, 189, 46)  # #FFBD2E
+self.maximize_button_color = (40, 201, 64)   # #28C940
+```
+
+```python Windows Style (Monochrome)
+self.close_button_color = (200, 200, 200)
+self.minimize_button_color = (200, 200, 200)
+self.maximize_button_color = (200, 200, 200)
+```
+
+```python Custom Brand Colors
+self.close_button_color = (220, 50, 50)
+self.minimize_button_color = (50, 150, 220)
+self.maximize_button_color = (50, 220, 150)
+```
+</CodeGroup>
+
+### Window Shadow and Position
+
+The window has a shadow effect for depth:
+
+```python vscode_mockup.py:draw_window_chrome
+# Draw VSCode window with shadow effect
+shadow_offset = 5
+shadow_color = (0, 0, 0, 128)
+
+# Draw shadow
+shadow_surface = pygame.Surface((self.window_width, self.window_height), pygame.SRCALPHA)
+shadow_surface.fill(shadow_color)
+self.screen.blit(shadow_surface, 
+                 (self.window_margin + shadow_offset, 
+                  self.window_margin + shadow_offset))
+```
+
+Customize the shadow:
+
+```python Custom Shadow
+shadow_offset = 10  # Larger offset for more pronounced shadow
+shadow_color = (0, 0, 0, 180)  # Darker shadow (higher alpha)
+```
+
+## Background Image Replacement
+
+The simulator uses a Windows XP wallpaper by default, but you can use any image.
+
+### Default Background
+
+```python vscode_mockup.py
+# Load and scale Windows XP background
+try:
+    self.background = pygame.image.load('./media/windows-xp-wallpaper.jpeg')
+    self.background = pygame.transform.scale(self.background, (width, height))
+except pygame.error:
+    print("Could not load background image, using solid color")
+    self.background = None
+```
+
+### Using Custom Backgrounds
+
+<Steps>
+  <Step title="Prepare Your Image">
+    - Any common format: JPEG, PNG, BMP, GIF
+    - Recommended: Match or exceed your video resolution (e.g., 1920x1080)
+    - The image will be automatically scaled to fit
+  </Step>
+
+  <Step title="Place in Media Directory">
+    Save your image in the `media/` folder:
+    ```
+    media/
+    ├── CascadiaCode.ttf
+    ├── windows-xp-wallpaper.jpeg
+    └── my-custom-background.png  ← Your image
+    ```
+  </Step>
+
+  <Step title="Update the Code">
+    Modify the path in `vscode_mockup.py`:
+    ```python
+    self.background = pygame.image.load('./media/my-custom-background.png')
+    ```
+  </Step>
+</Steps>
+
+### Background Ideas
+
+<CardGroup cols={2}>
+  <Card title="Solid Color" icon="fill">
+    ```python
+    # Skip image loading, use solid color
+    self.background = None
+    # Modify DESKTOP_COLOR for custom solid background
+    ```
+  </Card>
+
+  <Card title="Gradient" icon="palette">
+    Create a gradient image externally and use it as the background
+  </Card>
+
+  <Card title="Branded" icon="building">
+    Use your company logo or brand imagery
+  </Card>
+
+  <Card title="Minimal" icon="square">
+    Use a simple, non-distracting pattern or texture
+  </Card>
+</CardGroup>
+
+<Warning>
+  Large, high-resolution background images will increase memory usage and may slow down rendering.
+</Warning>
+
+## Font Customization
+
+The simulator uses Cascadia Code, Microsoft's VSCode default monospace font.
+
+### Default Font Configuration
+
+```python vscode_mockup.py
+# Try to load Cascadia Code font
+try:
+    font_path = './media/CascadiaCode.ttf'
+    self.font = pygame.font.Font(font_path, 14)
+except:
+    print("Could not load Cascadia Code, using fallback font")
+    self.font = pygame.font.SysFont('Consolas', 14)
+
+self.title_font = pygame.font.SysFont('Segoe UI', 12)
+```
+
+### Using Different Fonts
+
+<Tabs>
+  <Tab title="Custom TTF Font">
+    ```python
+    # Place your .ttf file in media/
+    font_path = './media/MyCustomFont.ttf'
+    self.font = pygame.font.Font(font_path, 14)
+    ```
+  </Tab>
+
+  <Tab title="System Font">
+    ```python
+    # Use any system-installed font
+    self.font = pygame.font.SysFont('JetBrains Mono', 14)
+    # or
+    self.font = pygame.font.SysFont('Fira Code', 14)
+    # or
+    self.font = pygame.font.SysFont('Source Code Pro', 14)
+    ```
+  </Tab>
+
+  <Tab title="Font with Size">
+    ```python
+    # Larger font for readability
+    self.font = pygame.font.Font(font_path, 18)
+    
+    # Smaller, compact font
+    self.font = pygame.font.Font(font_path, 12)
+    ```
+  </Tab>
+</Tabs>
+
+### Popular Coding Fonts
+
+- **Cascadia Code** (default) - Microsoft's VSCode font with ligatures
+- **JetBrains Mono** - Clean, designed for developers
+- **Fira Code** - Popular with ligature support
+- **Source Code Pro** - Adobe's readable monospace
+- **Consolas** - Windows classic (fallback)
+- **Monaco** - macOS classic
+- **SF Mono** - Apple's modern monospace
+
+<Note>
+  When changing fonts, you may need to adjust `char_width` and `line_height` for optimal spacing.
+</Note>
+
+## Title Bar Customization
+
+The window title bar displays "Visual Studio Code" by default.
+
+```python vscode_mockup.py:draw_title_bar
+# Window title
+title = self.title_font.render("Visual Studio Code", True, TEXT_COLOR)
+self.screen.blit(title, (self.width//2 - title.get_width()//2, 
+                        self.window_margin + (self.title_bar_height - title.get_height())//2))
+```
+
+### Custom Title Text
+
+```python Custom Title Examples
+# Show file name
+title = self.title_font.render("app.py - Visual Studio Code", True, TEXT_COLOR)
+
+# Custom application name
+title = self.title_font.render("My Code Editor", True, TEXT_COLOR)
+
+# Branded title
+title = self.title_font.render("MyCompany IDE", True, TEXT_COLOR)
+```
+
+## Complete Customization Example
+
+Here's a fully customized theme with all elements modified:
+
+```python vscode_mockup.py (Dracula Theme Example)
+import pygame
+import time
+import sys
+import numpy as np
+import cv2
+
+# Dracula Color Scheme
+BACKGROUND = (40, 42, 54)           # #282A36
+TEXT_COLOR = (248, 248, 242)        # #F8F8F2
+LINE_NUMBER_COLOR = (98, 114, 164)  # #6272A4
+TITLE_BAR_COLOR = (33, 34, 44)      # #21222C
+DESKTOP_COLOR = (68, 71, 90)        # #44475A
+
+class VSCodeMockup:
+    def __init__(self, width=1920, height=1080):
+        pygame.init()
+        self.width = width
+        self.height = height
+        self.screen = pygame.display.set_mode((width, height))
+        pygame.display.set_caption("Dracula Code Editor")
+        
+        # Custom background
+        try:
+            self.background = pygame.image.load('./media/dracula-wallpaper.png')
+            self.background = pygame.transform.scale(self.background, (width, height))
+        except pygame.error:
+            print("Could not load background image, using solid color")
+            self.background = None
+        
+        # Larger window
+        self.window_margin = 80
+        self.title_bar_height = 35
+        self.window_width = width - (self.window_margin * 2)
+        self.window_height = height - (self.window_margin * 1.5)
+        
+        # JetBrains Mono font
+        try:
+            font_path = './media/JetBrainsMono.ttf'
+            self.font = pygame.font.Font(font_path, 16)
+        except:
+            self.font = pygame.font.SysFont('Consolas', 16)
+        
+        self.title_font = pygame.font.SysFont('Segoe UI', 13)
+        self.line_height = 22
+        self.char_width = 9
+        self.left_margin = 60
+        
+        # Dracula-themed window buttons
+        self.close_button_color = (255, 85, 85)      # #FF5555
+        self.minimize_button_color = (241, 250, 140) # #F1FA8C
+        self.maximize_button_color = (80, 250, 123)  # #50FA7B
+```
+
+## Tips for Best Results
+
+<Steps>
+  <Step title="Test Your Colors">
+    Use a color picker to ensure your RGB values look good together
+  </Step>
+
+  <Step title="Maintain Contrast">
+    Ensure sufficient contrast between text and background for readability
+  </Step>
+
+  <Step title="Match Your Brand">
+    Use your company's brand colors for consistency
+  </Step>
+
+  <Step title="Keep Backgrounds Simple">
+    Complex backgrounds can distract from the code - use subtle patterns
+  </Step>
+
+  <Step title="Test at Target Resolution">
+    Preview your customizations at the resolution you'll actually use
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Examples" icon="code" href="/guides/examples">
+    See real-world examples and complete use cases
+  </Card>
+  
+  <Card title="Configuration" icon="gear" href="/guides/configuration">
+    Learn about window size, typing speed, and other settings
+  </Card>
+</CardGroup>

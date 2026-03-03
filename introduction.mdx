@@ -1,0 +1,76 @@
+---
+title: Introduction
+description: Create stunning video simulations of code being typed in a VSCode interface with a nostalgic Windows XP background
+---
+
+# VSCode Typing Simulator
+
+A Python application that creates professional video simulations of code being typed in a Visual Studio Code-like interface, complete with a nostalgic Windows XP-style desktop background.
+
+Perfect for creating coding tutorials, demonstrations, or social media content that showcases your code in an authentic development environment.
+
+## What is VSCode Typing Simulator?
+
+VSCode Typing Simulator transforms your Python source files into engaging typing simulation videos. The tool renders a realistic VSCode editor window with proper syntax highlighting, line numbers, and window chrome, all set against the iconic Windows XP wallpaper background.
+
+The output is a high-quality AVI video that shows your code being typed character by character, creating an engaging viewer experience.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Realistic VSCode Interface" icon="window">
+    Authentic VSCode-style editor with dark theme, title bar, and macOS-style window control buttons
+  </Card>
+  
+  <Card title="Windows XP Background" icon="image">
+    Nostalgic Windows XP desktop wallpaper creates a familiar and engaging environment
+  </Card>
+  
+  <Card title="Line Numbers" icon="list-ol">
+    Professional code editor appearance with automatic line numbering
+  </Card>
+  
+  <Card title="Customizable Typing Speed" icon="gauge">
+    Adjust the typing delay to control the pace of your simulation (default: 0.1s per character)
+  </Card>
+  
+  <Card title="High-Quality Output" icon="video">
+    Generates AVI format videos at 1280x720 resolution with 30 FPS
+  </Card>
+  
+  <Card title="Cascadia Code Font" icon="font">
+    Uses Microsoft's Cascadia Code font for authentic VSCode typography
+  </Card>
+</CardGroup>
+
+## How It Works
+
+1. **Provide a Python source file** - Any `.py` file you want to simulate typing
+2. **Configure the recording** - Set output name and duration
+3. **Generate the video** - The tool renders each character being typed in real-time
+4. **Get your AVI file** - Ready to share or edit further
+
+## Quick Links
+
+<CardGroup cols={2}>
+  <Card title="Quickstart Guide" icon="rocket" href="/quickstart">
+    Get up and running in minutes with a simple example
+  </Card>
+  
+  <Card title="Installation" icon="download" href="/installation">
+    Detailed installation instructions and system requirements
+  </Card>
+</CardGroup>
+
+## Technical Highlights
+
+The simulator is built with:
+- **Pygame** for rendering the VSCode interface and handling graphics
+- **OpenCV** for video encoding and frame capture
+- **NumPy** for efficient array operations
+
+All rendering happens in real-time, character by character, ensuring smooth and realistic typing animations.
+
+<Note>
+  The tool currently supports Python source files. Each character is rendered individually to create an authentic typing effect.
+</Note>

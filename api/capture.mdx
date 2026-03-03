@@ -1,0 +1,208 @@
+---
+title: "Capture Module"
+description: "Video recording functions for capturing typing simulations"
+---
+
+## Overview
+
+The `capture` module provides the `record_video()` function for recording VSCode typing simulations from source code files. It handles video codec configuration, screen capture, and file I/O.
+
+## record_video
+
+```python
+record_video(source_file, output_file, duration)
+```
+
+Records a video of simulated typing from a source code file using the VSCode mockup interface.
+
+<ParamField path="source_file" type="str" required>
+  Path to the source code file to simulate typing. Must be a valid readable file with UTF-8 encoding
+</ParamField>
+
+<ParamField path="output_file" type="str" required>
+  Output video file path without extension. The function automatically appends `.avi`
+</ParamField>
+
+<ParamField path="duration" type="int" required>
+  Recording duration in seconds (currently used for user information, actual duration depends on typing speed and file size)
+</ParamField>
+
+### Video Configuration
+
+The function uses the following fixed configuration:
+
+- **Screen Size:** 1280x720 pixels (HD ready)
+- **Codec:** MJPG (Motion JPEG)
+- **Format:** AVI container
+- **Frame Rate:** 30.0 FPS
+- **Encoding:** UTF-8 for source file reading
+
+<Note>
+The MJPG codec with AVI format is used for maximum compatibility across platforms and video players.
+</Note>
+
+### Behavior
+
+1. Validates video writer initialization
+2. Reads the entire source file content
+3. Creates a `VSCodeMockup` instance with default dimensions (1280x720)
+4. Simulates typing with default delay (0.1 seconds per character)
+5. Properly releases resources (video writer, OpenCV windows, Pygame)
+
+<Warning>
+If the video writer fails to initialize, the function prints an error message and returns early without recording.
+</Warning>
+
+### Example Usage
+
+```python
+from capture import record_video
+import os
+
+# Verify file exists
+if os.path.exists('example.py'):
+    record_video(
+        source_file='example.py',
+        output_file='demo_video',
+        duration=60
+    )
+    print("Video saved as: demo_video.avi")
+else:
+    print("Source file not found")
+```
+
+### CLI Usage
+
+The module can be run as a standalone script:
+
+```bash
+python capture.py
+```
+
+When run directly, it will prompt for:
+1. Source file name (including extension)
+2. Output file name (without extension)
+3. Recording duration in seconds
+
+The script then:
+- Validates the source file exists
+- Converts to absolute path
+- Displays recording information
+- Waits 3 seconds before starting
+- Records the video
+
+#### Example CLI Session
+
+```bash
+$ python capture.py
+Enter the file name to simulate (including .py extension): example.py
+Enter the output file name (without extension): my_demo
+Enter recording duration in seconds: 30
+
+Starting recording in 3 seconds...
+Source file: /home/user/project/example.py
+Output file: my_demo.avi
+Duration: 30 seconds
+
+Please:
+1. Don't move the mouse or use keyboard during recording
+2. Wait for the process to finish
+
+Recording started successfully
+```
+
+### Error Handling
+
+<CodeGroup>
+```python Video Writer Initialization Error
+if not out.isOpened():
+    print("Error: Could not initialize video recording.")
+    return
+```
+
+```python File Not Found (CLI)
+if not os.path.exists(source_file):
+    print(f"Error: File '{source_file}' does not exist.")
+    exit(1)
+```
+</CodeGroup>
+
+### Resource Cleanup
+
+The function uses a `try-finally` block to ensure proper resource cleanup:
+
+```python
+try:
+    # Recording logic
+    mockup = VSCodeMockup()
+    mockup.simulate_typing(code, out)
+finally:
+    out.release()           # Release video writer
+    cv2.destroyAllWindows() # Close OpenCV windows
+    pygame.quit()           # Quit Pygame
+```
+
+<Note>
+Resources are always released even if an exception occurs during recording.
+</Note>
+
+## Implementation Details
+
+### Video Writer Setup
+
+```python
+screen_size = (1280, 720)
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+out = cv2.VideoWriter(
+    output_file + '.avi',
+    fourcc,
+    30.0,
+    screen_size
+)
+```
+
+### File Reading
+
+```python
+with open(source_file, 'r', encoding='utf-8') as file:
+    code = file.read()
+```
+
+Files are read with UTF-8 encoding to support international characters and special symbols in source code.
+
+## Complete Example
+
+```python
+import os
+from capture import record_video
+
+def create_demo_videos():
+    """Create demo videos for all Python files in current directory"""
+    python_files = [f for f in os.listdir('.') if f.endswith('.py')]
+    
+    for source_file in python_files:
+        output_name = source_file.replace('.py', '_demo')
+        print(f"Recording {source_file}...")
+        
+        record_video(
+            source_file=source_file,
+            output_file=output_name,
+            duration=60  # Informational only
+        )
+        
+        print(f"Saved: {output_name}.avi")
+
+if __name__ == '__main__':
+    create_demo_videos()
+```
+
+## Dependencies
+
+- `cv2` (OpenCV) - Video writing and codec handling
+- `pygame` - Required by VSCodeMockup
+- `numpy` - Required by VSCodeMockup for frame processing
+- `vscode_mockup` - The VSCodeMockup class
+
+## See Also
+
+- [VSCodeMockup](/api/vscode-mockup) - Core mockup class used by this module

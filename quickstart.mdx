@@ -1,80 +1,192 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Get started with VSCode Typing Simulator in minutes and create your first typing simulation video
 ---
 
-## Get started in three steps
+# Quickstart Guide
 
-Get your documentation site running locally and make your first customization.
+This guide will help you create your first typing simulation video in just a few minutes.
 
-### Step 1: Set up your local environment
+## Prerequisites
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+Before you begin, ensure you have:
 
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+- Python 3.9 or higher installed
+- pip package manager
+- A Python source file you want to simulate
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  You can verify your Python version by running `python --version` or `python3 --version` in your terminal.
 </Note>
+
+## Installation
+
+<Steps>
+  <Step title="Clone or download the repository">
+    Get the VSCode Typing Simulator source code on your local machine.
+  </Step>
+  
+  <Step title="Create a virtual environment">
+    Navigate to the project directory and create an isolated Python environment:
+    
+    ```bash
+    python -m venv env
+    ```
+    
+    Then activate it:
+    
+    <CodeGroup>
+      ```bash Linux/macOS
+      source env/bin/activate
+      ```
+      
+      ```bash Windows
+      env\Scripts\activate
+      ```
+    </CodeGroup>
+  </Step>
+  
+  <Step title="Install dependencies">
+    Install the required Python packages:
+    
+    ```bash
+    pip install -r requirements.txt
+    ```
+    
+    This installs:
+    - `opencv-python==4.8.0` - For video encoding
+    - `numpy==1.24.0` - For array operations
+    - `pygame==2.5.0` - For graphics rendering
+  </Step>
+</Steps>
+
+## Create Your First Video
+
+Now let's create a simple typing simulation video!
+
+<Steps>
+  <Step title="Prepare a Python file">
+    Create a simple Python file to simulate. For example, create `hello.py`:
+    
+    ```python hello.py
+    def greet(name):
+        """Print a friendly greeting."""
+        print(f"Hello, {name}!")
+        print("Welcome to VSCode Typing Simulator")
+    
+    if __name__ == "__main__":
+        greet("World")
+    ```
+  </Step>
+  
+  <Step title="Run the capture script">
+    Execute the main capture script:
+    
+    ```bash
+    python capture.py
+    ```
+  </Step>
+  
+  <Step title="Follow the prompts">
+    The script will ask for three inputs:
+    
+    ```
+    Enter the file name to simulate (including .py extension): hello.py
+    Enter the output file name (without extension): my_first_video
+    Enter recording duration in seconds: 15
+    ```
+    
+    <Warning>
+      Don't move your mouse or use the keyboard during recording. The process captures frames in real-time.
+    </Warning>
+  </Step>
+  
+  <Step title="Wait for completion">
+    The script will:
+    - Display a 3-second countdown
+    - Begin rendering the typing simulation
+    - Save the output as `my_first_video.avi`
+    
+    Progress is shown in the console as the video is being created.
+  </Step>
+</Steps>
+
+## Understanding the Code
+
+Here's what happens behind the scenes when you run `capture.py`:
+
+```python capture.py
+import time
+import cv2
+import numpy as np
+import os
+import pygame
+from vscode_mockup import VSCodeMockup
+
+def record_video(source_file, output_file, duration):
+    # Configure video capture
+    screen_size = (1280, 720)  # Fixed size for mockup
+    
+    # Use MJPG with AVI format for better compatibility
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    out = cv2.VideoWriter(
+        output_file + '.avi',
+        fourcc,
+        30.0,
+        screen_size
+    )
+    
+    if not out.isOpened():
+        print("Error: Could not initialize video recording.")
+        return
+        
+    print("Recording started successfully")
+    
+    try:
+        # Read source code
+        with open(source_file, 'r', encoding='utf-8') as file:
+            code = file.read()
+        
+        # Initialize mockup
+        mockup = VSCodeMockup()
+        
+        # Simulate typing and record
+        mockup.simulate_typing(code, out)
+            
+    finally:
+        out.release()
+        cv2.destroyAllWindows()
+        pygame.quit()
+```
+
+The `record_video` function:
+1. Initializes a video writer with MJPG codec at 30 FPS
+2. Reads your Python source file
+3. Creates a VSCode mockup interface
+4. Simulates typing character by character while recording each frame
+
+## Key Parameters
+
+You can customize the typing simulation by modifying parameters in the source code:
+
+| Parameter | Location | Default | Description |
+|-----------|----------|---------|-------------|
+| `delay` | `vscode_mockup.py:145` | `0.1` | Time between each character (seconds) |
+| `width`, `height` | `vscode_mockup.py:15` | `1280, 720` | Video resolution |
+| Font size | `vscode_mockup.py:39` | `14` | Editor font size in pixels |
+
+<Tip>
+  To speed up or slow down the typing animation, modify the `delay` parameter in the `simulate_typing` method in `vscode_mockup.py:145`.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Installation Guide" icon="download" href="/installation">
+    Learn about detailed installation options and troubleshooting
+  </Card>
+  
+  <Card title="Configuration" icon="sliders" href="/guides/configuration">
+    Customize window size, typing speed, and more
+  </Card>
+</CardGroup>

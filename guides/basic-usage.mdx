@@ -1,0 +1,198 @@
+---
+title: Basic Usage
+description: Learn how to create your first typing simulation video with VSCode Typing Simulator
+---
+
+## Getting Started
+
+VSCode Typing Simulator creates realistic videos of code being typed in a Visual Studio Code interface. This guide will walk you through creating your first typing simulation.
+
+## Running the Simulator
+
+The main script `capture.py` handles video recording and simulation. Here's how to use it:
+
+<Steps>
+  <Step title="Prepare Your Source File">
+    Place the Python file you want to simulate in your project directory. This will be the code that appears to be typed in the video.
+  </Step>
+
+  <Step title="Run the Script">
+    Execute the capture script:
+    
+    ```bash
+    python capture.py
+    ```
+  </Step>
+
+  <Step title="Provide Input Parameters">
+    The script will prompt you for three inputs:
+    
+    - **Source file name**: The Python file to simulate (including `.py` extension)
+    - **Output file name**: The name for your video (without extension)
+    - **Recording duration**: Length in seconds (note: this is informational, actual duration depends on typing speed)
+  </Step>
+
+  <Step title="Wait for Processing">
+    The script will:
+    - Display a 3-second countdown
+    - Start recording the typing simulation
+    - Save the output as an AVI file
+  </Step>
+</Steps>
+
+<Warning>
+  During recording:
+  - Don't move the mouse or use the keyboard
+  - Wait for the process to finish completely
+  - The script will automatically quit when done
+</Warning>
+
+## Input Parameters
+
+The simulator accepts three key parameters:
+
+### Source File
+
+```python
+source_file = input("Enter the file name to simulate (including .py extension): ")
+```
+
+This is the Python file containing the code you want to appear in the simulation. The file must exist in your project directory or you can provide an absolute path.
+
+### Output File
+
+```python
+output_file = input("Enter the output file name (without extension): ")
+```
+
+The name for your output video. The `.avi` extension will be added automatically.
+
+### Duration
+
+```python
+duration = int(input("Enter recording duration in seconds: "))
+```
+
+While this parameter is collected, the actual video length is determined by the amount of code and the typing speed (default: 0.1 seconds per character).
+
+## Real Workflow Example
+
+Here's a complete example from the README demonstrating how to create a "Hello World" typing simulation:
+
+<CodeGroup>
+```bash Terminal Session
+python capture.py
+```
+
+```text Prompts and Responses
+Enter the file name to simulate (including .py extension): test.py
+Enter the output file name (without extension): demo
+Enter recording duration in seconds: 10
+
+Starting recording in 3 seconds...
+Source file: /path/to/test.py
+Output file: demo.avi
+Duration: 10 seconds
+
+Please:
+1. Don't move the mouse or use keyboard during recording
+2. Wait for the process to finish
+
+Recording started successfully
+```
+</CodeGroup>
+
+## Expected Output
+
+After the simulation completes, you'll have:
+
+<Steps>
+  <Step title="Video File">
+    An AVI video file (e.g., `demo.avi`) in your project directory
+  </Step>
+
+  <Step title="Video Features">
+    The video will include:
+    - VSCode-like interface with dark theme
+    - Windows XP-style desktop background
+    - Realistic window chrome with control buttons (red, yellow, green)
+    - Line numbers on the left
+    - Code appearing character by character
+  </Step>
+
+  <Step title="Video Specifications">
+    - **Resolution**: 1280x720 (HD)
+    - **Frame Rate**: 30 FPS
+    - **Codec**: MJPG
+    - **Format**: AVI
+  </Step>
+</Steps>
+
+## Understanding the Process
+
+The `record_video` function in `capture.py` handles the entire process:
+
+```python
+def record_video(source_file, output_file, duration):
+    # Configure video capture
+    screen_size = (1280, 720)  # Fixed size for mockup
+    
+    # Use MJPG with AVI format for better compatibility
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    out = cv2.VideoWriter(
+        output_file + '.avi',
+        fourcc,
+        30.0,
+        screen_size
+    )
+    
+    # Read source code
+    with open(source_file, 'r', encoding='utf-8') as file:
+        code = file.read()
+    
+    # Initialize mockup
+    mockup = VSCodeMockup()
+    
+    # Simulate typing and record
+    mockup.simulate_typing(code, out)
+```
+
+<Note>
+  The video is recorded at a fixed 1280x720 resolution with 30 FPS for optimal compatibility and quality.
+</Note>
+
+## Troubleshooting
+
+### File Not Found Error
+
+If you see `Error: File 'filename.py' does not exist`, verify:
+- The file name is spelled correctly
+- The file is in the current directory
+- You included the `.py` extension
+
+### Video Recording Error
+
+If you see `Error: Could not initialize video recording`, check:
+- OpenCV is properly installed
+- You have write permissions in the directory
+- Sufficient disk space is available
+
+### Missing Assets
+
+If the background or font doesn't load, the simulator will:
+- Use fallback colors instead of the background image
+- Use system font (Consolas) instead of Cascadia Code
+
+These fallbacks ensure the simulation still works without the media files.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="gear" href="/guides/configuration">
+    Learn how to adjust window size, typing speed, and other settings
+  </Card>
+  
+  <Card title="Customization" icon="palette" href="/guides/customization">
+    Customize colors, fonts, and visual appearance
+  </Card>
+</CardGroup>

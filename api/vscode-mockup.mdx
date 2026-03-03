@@ -1,0 +1,327 @@
+---
+title: "VSCodeMockup"
+description: "Core class for creating Visual Studio Code mockup interface with typing simulation"
+---
+
+## Overview
+
+The `VSCodeMockup` class creates a realistic Visual Studio Code interface simulation using Pygame. It provides a complete mockup window with title bar, line numbers, text editor area, and window controls, designed to capture realistic coding session videos.
+
+## Constructor
+
+```python
+VSCodeMockup(width=1280, height=720)
+```
+
+Initializes a new VSCode mockup window with customizable dimensions.
+
+<ParamField path="width" type="int" default="1280">
+  The width of the mockup window in pixels
+</ParamField>
+
+<ParamField path="height" type="int" default="720">
+  The height of the mockup window in pixels
+</ParamField>
+
+### Example
+
+```python
+from vscode_mockup import VSCodeMockup
+
+# Create mockup with default dimensions (1280x720)
+mockup = VSCodeMockup()
+
+# Create mockup with custom dimensions
+mockup = VSCodeMockup(width=1920, height=1080)
+```
+
+## Instance Attributes
+
+### Display Properties
+
+<ParamField path="screen" type="pygame.Surface">
+  The main Pygame display surface for rendering the mockup
+</ParamField>
+
+<ParamField path="width" type="int">
+  The width of the mockup window
+</ParamField>
+
+<ParamField path="height" type="int">
+  The height of the mockup window
+</ParamField>
+
+<ParamField path="background" type="pygame.Surface | None">
+  The desktop background image (Windows XP wallpaper). Falls back to `None` if the image fails to load
+</ParamField>
+
+### Window Layout
+
+<ParamField path="window_margin" type="int" default="100">
+  Margin around the VSCode window from screen edges
+</ParamField>
+
+<ParamField path="title_bar_height" type="int" default="30">
+  Height of the title bar in pixels
+</ParamField>
+
+<ParamField path="window_width" type="int">
+  Calculated width of the VSCode window (excluding margins)
+</ParamField>
+
+<ParamField path="window_height" type="int">
+  Calculated height of the VSCode window (excluding margins)
+</ParamField>
+
+### Text Rendering
+
+<ParamField path="font" type="pygame.font.Font">
+  Font for code text (Cascadia Code at 14pt, or Consolas fallback)
+</ParamField>
+
+<ParamField path="title_font" type="pygame.font.Font">
+  Font for window title (Segoe UI at 12pt)
+</ParamField>
+
+<ParamField path="line_height" type="int" default="20">
+  Vertical spacing between lines of code
+</ParamField>
+
+<ParamField path="char_width" type="int" default="8">
+  Width of a single character in pixels
+</ParamField>
+
+<ParamField path="left_margin" type="int" default="50">
+  Left margin for code text (space for line numbers)
+</ParamField>
+
+### Text Buffer
+
+<ParamField path="text_buffer" type="list[str]">
+  List of lines in the editor buffer
+</ParamField>
+
+<ParamField path="current_line" type="int">
+  Index of the current line being edited
+</ParamField>
+
+### Colors
+
+<ParamField path="close_button_color" type="tuple">
+  RGB color for close button: `(232, 17, 35)` (red)
+</ParamField>
+
+<ParamField path="minimize_button_color" type="tuple">
+  RGB color for minimize button: `(255, 185, 0)` (yellow)
+</ParamField>
+
+<ParamField path="maximize_button_color" type="tuple">
+  RGB color for maximize button: `(0, 204, 0)` (green)
+</ParamField>
+
+## Methods
+
+### simulate_typing
+
+```python
+simulate_typing(text, video_writer, delay=0.1)
+```
+
+Simulates typing the provided text character by character, rendering each frame and writing to the video.
+
+<ParamField path="text" type="str" required>
+  The text content to type (usually source code)
+</ParamField>
+
+<ParamField path="video_writer" type="cv2.VideoWriter" required>
+  OpenCV VideoWriter object to save frames
+</ParamField>
+
+<ParamField path="delay" type="float" default="0.1">
+  Delay in seconds between each character (typing speed)
+</ParamField>
+
+<Note>
+This method handles Pygame events during simulation and will respect quit events to allow graceful termination.
+</Note>
+
+#### Example
+
+```python
+import cv2
+from vscode_mockup import VSCodeMockup
+
+mockup = VSCodeMockup()
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+out = cv2.VideoWriter('output.avi', fourcc, 30.0, (1280, 720))
+
+code = """def hello_world():
+    print("Hello, World!")"""
+
+mockup.simulate_typing(code, out, delay=0.05)
+out.release()
+```
+
+### capture_frame
+
+```python
+capture_frame()
+```
+
+Captures the current screen state as an OpenCV-compatible BGR frame.
+
+**Returns:** `numpy.ndarray` - BGR image array ready for video writing
+
+#### Example
+
+```python
+mockup = VSCodeMockup()
+frame = mockup.capture_frame()
+# frame is now a numpy array in BGR format
+```
+
+### write_char
+
+```python
+write_char(char)
+```
+
+Writes a single character to the text buffer. Handles newlines by creating new lines.
+
+<ParamField path="char" type="str" required>
+  A single character to write. Use `'\n'` for newlines
+</ParamField>
+
+#### Example
+
+```python
+mockup = VSCodeMockup()
+mockup.write_char('d')
+mockup.write_char('e')
+mockup.write_char('f')
+mockup.write_char('\n')  # New line
+mockup.write_char(' ')
+```
+
+### draw_window_chrome
+
+```python
+draw_window_chrome()
+```
+
+Draws the complete VSCode window including desktop background, window shadow, main window, and title bar.
+
+This method:
+1. Draws the desktop background (Windows XP wallpaper or solid color fallback)
+2. Adds a shadow effect behind the window
+3. Draws the main VSCode window with dark background
+4. Renders the title bar by calling `draw_title_bar()`
+
+#### Example
+
+```python
+mockup = VSCodeMockup()
+mockup.draw_window_chrome()
+pygame.display.flip()
+```
+
+### draw_title_bar
+
+```python
+draw_title_bar()
+```
+
+Draws the VSCode title bar including the window control buttons and the "Visual Studio Code" title text.
+
+<Note>
+This method is typically called by `draw_window_chrome()` and doesn't need to be called directly.
+</Note>
+
+### draw_window_buttons
+
+```python
+draw_window_buttons(button_size, button_margin, button_y)
+```
+
+Draws the macOS-style window control buttons (close, minimize, maximize) in red, yellow, and green.
+
+<ParamField path="button_size" type="int" required>
+  Diameter of each circular button in pixels
+</ParamField>
+
+<ParamField path="button_margin" type="int" required>
+  Spacing between buttons in pixels
+</ParamField>
+
+<ParamField path="button_y" type="int" required>
+  Vertical position of the button centers
+</ParamField>
+
+<Note>
+This method is typically called by `draw_title_bar()` and doesn't need to be called directly.
+</Note>
+
+### draw_line_numbers
+
+```python
+draw_line_numbers()
+```
+
+Draws line numbers in the left margin of the editor based on the current number of lines in the text buffer.
+
+#### Example
+
+```python
+mockup = VSCodeMockup()
+mockup.text_buffer = ["def hello():", "    print('hi')"]
+mockup.draw_line_numbers()
+pygame.display.flip()
+```
+
+## Color Constants
+
+The following color constants are defined in `vscode_mockup.py`:
+
+| Constant | RGB Value | Description |
+|----------|-----------|-------------|
+| `BACKGROUND` | `(30, 30, 30)` | Dark background of VSCode editor |
+| `TEXT_COLOR` | `(220, 220, 220)` | Code text color |
+| `LINE_NUMBER_COLOR` | `(100, 100, 100)` | Line number color |
+| `TITLE_BAR_COLOR` | `(50, 50, 50)` | Title bar background |
+| `DESKTOP_COLOR` | `(0, 122, 204)` | Desktop background fallback |
+
+## Complete Usage Example
+
+```python
+import cv2
+import pygame
+from vscode_mockup import VSCodeMockup
+
+# Initialize mockup
+mockup = VSCodeMockup(width=1920, height=1080)
+
+# Setup video writer
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+out = cv2.VideoWriter('demo.avi', fourcc, 30.0, (1920, 1080))
+
+# Load source code
+with open('example.py', 'r') as f:
+    code = f.read()
+
+# Simulate typing at 20 chars per second
+mockup.simulate_typing(code, out, delay=0.05)
+
+# Cleanup
+out.release()
+pygame.quit()
+```
+
+## Dependencies
+
+- `pygame` - GUI and rendering
+- `cv2` (OpenCV) - Video capture and encoding
+- `numpy` - Frame array manipulation
+
+<Warning>
+Make sure to initialize Pygame before creating a `VSCodeMockup` instance, or let the constructor handle initialization. The constructor automatically calls `pygame.init()`.
+</Warning>

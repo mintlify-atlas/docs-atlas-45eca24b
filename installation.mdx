@@ -1,0 +1,305 @@
+---
+title: Installation
+description: Complete installation guide for VSCode Typing Simulator with system requirements, setup steps, and troubleshooting
+---
+
+# Installation Guide
+
+This guide provides detailed instructions for installing and configuring VSCode Typing Simulator on your system.
+
+## System Requirements
+
+### Operating System
+- Windows 10/11
+- macOS 10.14 or later
+- Linux (Ubuntu 20.04+, Fedora 35+, or equivalent)
+
+### Software Requirements
+
+<CardGroup cols={2}>
+  <Card title="Python" icon="python">
+    **Version 3.9 or higher**
+    
+    Required for running the application
+  </Card>
+  
+  <Card title="pip" icon="box">
+    **Latest version recommended**
+    
+    Python package installer (usually included with Python)
+  </Card>
+</CardGroup>
+
+### Hardware Requirements
+
+- **RAM**: Minimum 4GB (8GB recommended)
+- **Storage**: At least 500MB free space
+- **Display**: Any resolution (output is fixed at 1280x720)
+
+## Installation Steps
+
+<Steps>
+  <Step title="Verify Python Installation">
+    Check that Python 3.9+ is installed:
+    
+    <CodeGroup>
+      ```bash Linux/macOS
+      python3 --version
+      ```
+      
+      ```bash Windows
+      python --version
+      ```
+    </CodeGroup>
+    
+    You should see output like `Python 3.9.0` or higher.
+    
+    <Warning>
+      If Python is not installed, download it from [python.org](https://www.python.org/downloads/) before continuing.
+    </Warning>
+  </Step>
+  
+  <Step title="Download the Project">
+    Clone the repository or download the source code:
+    
+    ```bash
+    git clone <repository-url>
+    cd vscode-typing-simulator
+    ```
+    
+    Or download and extract the ZIP file from the repository.
+  </Step>
+  
+  <Step title="Create a Virtual Environment">
+    Creating a virtual environment isolates the project dependencies from your system Python:
+    
+    <CodeGroup>
+      ```bash Linux/macOS
+      python3 -m venv env
+      ```
+      
+      ```bash Windows
+      python -m venv env
+      ```
+    </CodeGroup>
+    
+    <Note>
+      A virtual environment is strongly recommended to avoid conflicts with other Python projects.
+    </Note>
+  </Step>
+  
+  <Step title="Activate the Virtual Environment">
+    <CodeGroup>
+      ```bash Linux/macOS
+      source env/bin/activate
+      ```
+      
+      ```bash Windows (Command Prompt)
+      env\Scripts\activate
+      ```
+      
+      ```bash Windows (PowerShell)
+      env\Scripts\Activate.ps1
+      ```
+    </CodeGroup>
+    
+    You should see `(env)` appear at the beginning of your terminal prompt.
+  </Step>
+  
+  <Step title="Install Dependencies">
+    Install all required Python packages using pip:
+    
+    ```bash
+    pip install -r requirements.txt
+    ```
+    
+    This installs:
+    - **opencv-python 4.8.0** - Computer vision library for video processing
+    - **numpy 1.24.0** - Numerical computing library for array operations
+    - **pygame 2.5.0** - Graphics library for rendering the VSCode interface
+    
+    The installation may take a few minutes depending on your internet connection.
+  </Step>
+  
+  <Step title="Verify Installation">
+    Verify all dependencies are correctly installed:
+    
+    ```bash
+    pip list
+    ```
+    
+    You should see the following packages (among others):
+    ```
+    opencv-python    4.8.0
+    numpy           1.24.0
+    pygame          2.5.0
+    ```
+  </Step>
+  
+  <Step title="Verify Media Assets">
+    Ensure the required media files are present in the `media/` directory:
+    
+    - `media/CascadiaCode.ttf` - Cascadia Code font
+    - `media/windows-xp-wallpaper.jpeg` - Windows XP background image
+    
+    <Warning>
+      The application will fall back to system fonts and solid colors if these assets are missing, but the visual quality will be reduced.
+    </Warning>
+  </Step>
+</Steps>
+
+## Verifying Your Installation
+
+Test that everything is working correctly:
+
+```bash
+python capture.py
+```
+
+You should see the interactive prompts. Press `Ctrl+C` to exit without creating a video.
+
+<Tip>
+  Create a simple test file to verify the complete workflow. See the [Quickstart Guide](/quickstart) for a step-by-step example.
+</Tip>
+
+## Project Structure
+
+After installation, your project directory should look like this:
+
+```
+vscode-typing-simulator/
+├── capture.py              # Main video capture script
+├── vscode_mockup.py        # VSCode interface renderer
+├── requirements.txt        # Python dependencies
+├── media/                  # Asset directory
+│   ├── CascadiaCode.ttf           # Cascadia Code font
+│   └── windows-xp-wallpaper.jpeg  # Background image
+├── env/                    # Virtual environment (after setup)
+└── *.avi                   # Generated videos (after running)
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="ImportError: No module named 'cv2'">
+    **Problem**: OpenCV is not installed correctly.
+    
+    **Solution**:
+    ```bash
+    pip uninstall opencv-python
+    pip install opencv-python==4.8.0
+    ```
+  </Accordion>
+  
+  <Accordion title="pygame.error: No available video device">
+    **Problem**: Pygame cannot initialize the display (common on headless servers).
+    
+    **Solution**: Ensure you're running on a system with a display. For headless environments, you may need to configure a virtual display using Xvfb:
+    
+    ```bash
+    # Linux only
+    sudo apt-get install xvfb
+    xvfb-run python capture.py
+    ```
+  </Accordion>
+  
+  <Accordion title="Error: Could not initialize video recording">
+    **Problem**: OpenCV cannot create the video writer, possibly due to missing codecs.
+    
+    **Solution**: Install system video codecs:
+    
+    <CodeGroup>
+      ```bash Ubuntu/Debian
+      sudo apt-get install libavcodec-extra
+      ```
+      
+      ```bash macOS
+      brew install ffmpeg
+      ```
+      
+      ```bash Windows
+      # Install K-Lite Codec Pack or FFmpeg
+      ```
+    </CodeGroup>
+  </Accordion>
+  
+  <Accordion title="Could not load Cascadia Code font">
+    **Problem**: Font file is missing or corrupt.
+    
+    **Solution**: The application will automatically fall back to Consolas or another monospace font. To use Cascadia Code:
+    1. Download from [Microsoft's repository](https://github.com/microsoft/cascadia-code/releases)
+    2. Extract `CascadiaCode.ttf`
+    3. Place in the `media/` directory
+  </Accordion>
+  
+  <Accordion title="Could not load background image">
+    **Problem**: Windows XP wallpaper is missing.
+    
+    **Solution**: The application will use a solid color background. To restore the XP wallpaper:
+    1. Obtain the Windows XP Bliss wallpaper
+    2. Save as `windows-xp-wallpaper.jpeg` in the `media/` directory
+  </Accordion>
+  
+  <Accordion title="Error: File 'test.py' does not exist">
+    **Problem**: The source file path is incorrect.
+    
+    **Solution**: 
+    - Ensure the Python file exists in the current directory
+    - Use the full filename including the `.py` extension
+    - Or provide an absolute path to the file
+  </Accordion>
+</AccordionGroup>
+
+### Dependency Version Issues
+
+If you encounter compatibility issues with the specified versions, you can try installing compatible ranges:
+
+```bash
+pip install opencv-python>=4.8.0,<5.0.0
+pip install numpy>=1.24.0,<2.0.0
+pip install pygame>=2.5.0,<3.0.0
+```
+
+<Warning>
+  Using different versions may cause unexpected behavior. The specified versions in `requirements.txt` have been tested together.
+</Warning>
+
+## Uninstallation
+
+To remove VSCode Typing Simulator:
+
+<Steps>
+  <Step title="Deactivate the virtual environment">
+    ```bash
+    deactivate
+    ```
+  </Step>
+  
+  <Step title="Delete the project directory">
+    Remove the entire project folder including the virtual environment:
+    
+    <CodeGroup>
+      ```bash Linux/macOS
+      rm -rf vscode-typing-simulator/
+      ```
+      
+      ```bash Windows
+      rmdir /s vscode-typing-simulator
+      ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Create your first typing simulation video
+  </Card>
+  
+  <Card title="API Reference" icon="code" href="/api/vscode-mockup">
+    Explore the VSCodeMockup class API
+  </Card>
+</CardGroup>

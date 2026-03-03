@@ -1,0 +1,490 @@
+---
+title: Examples
+description: Real-world examples and use cases for VSCode Typing Simulator
+---
+
+## Overview
+
+This guide provides practical examples of using VSCode Typing Simulator for different purposes, from simple demos to polished tutorial videos.
+
+## Example from README
+
+The project includes a basic example demonstrating the core functionality.
+
+### Hello World Demo
+
+This is the example referenced in the README:
+
+<Steps>
+  <Step title="Create Test File">
+    Create a simple Python file called `test.py`:
+    
+    ```python test.py
+    def hello_world():
+        print("Hello, World!")
+    
+    if __name__ == "__main__":
+        hello_world()
+    ```
+  </Step>
+
+  <Step title="Run the Simulator">
+    ```bash
+    python capture.py
+    ```
+  </Step>
+
+  <Step title="Enter Parameters">
+    When prompted:
+    - Source file: `test.py`
+    - Output file: `demo`
+    - Duration: `10` seconds
+  </Step>
+
+  <Step title="View Results">
+    The simulator will create `demo.avi` showing the code being typed character by character.
+  </Step>
+</Steps>
+
+<Note>
+  This example creates approximately a 5-7 second video (depending on typing speed) showing 7 lines of Python code.
+</Note>
+
+## Tutorial Video Example
+
+Create an engaging tutorial showing how to build a Python function.
+
+### Flask API Endpoint Demo
+
+<Steps>
+  <Step title="Prepare Source Code">
+    Create a meaningful example that teaches a concept:
+    
+    ```python flask_api.py
+    from flask import Flask, jsonify, request
+    
+    app = Flask(__name__)
+    
+    @app.route('/api/users', methods=['GET'])
+    def get_users():
+        users = [
+            {"id": 1, "name": "Alice"},
+            {"id": 2, "name": "Bob"},
+        ]
+        return jsonify(users)
+    
+    @app.route('/api/users/<int:user_id>', methods=['GET'])
+    def get_user(user_id):
+        user = {"id": user_id, "name": "Sample User"}
+        return jsonify(user)
+    
+    if __name__ == '__main__':
+        app.run(debug=True)
+    ```
+  </Step>
+
+  <Step title="Customize for Readability">
+    Adjust settings in `capture.py` for better tutorial visibility:
+    
+    ```python
+    # Slower typing for educational content
+    mockup.simulate_typing(code, out, delay=0.15)
+    ```
+  </Step>
+
+  <Step title="Generate Video">
+    ```bash
+    python capture.py
+    # Source: flask_api.py
+    # Output: flask_tutorial
+    # Duration: 20
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  For tutorials, use slower typing speeds (0.15-0.2s) so viewers can follow along.
+</Note>
+
+## Social Media Content
+
+Create eye-catching content for Twitter, Instagram, or LinkedIn.
+
+### Quick Code Snippet for Social
+
+<Tabs>
+  <Tab title="Python Tip">
+    ```python python_tip.py
+    # Python Pro Tip: List Comprehension
+    
+    # Instead of this:
+    squares = []
+    for i in range(10):
+        squares.append(i ** 2)
+    
+    # Do this:
+    squares = [i ** 2 for i in range(10)]
+    
+    print(squares)
+    # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+    ```
+    
+    **Settings**: Fast typing (0.05s), square format (1080x1080)
+  </Tab>
+
+  <Tab title="JavaScript Snippet">
+    ```python js_snippet.py
+    # Save as .py but content can be any code
+    # Arrow Functions in JavaScript
+    
+    const greet = (name) => {
+      return `Hello, ${name}!`;
+    };
+    
+    # Shorter version
+    const greet = name => `Hello, ${name}!`;
+    
+    console.log(greet('World'));
+    ```
+    
+    **Settings**: Medium speed (0.1s), 1280x720
+  </Tab>
+
+  <Tab title="Algorithm Demo">
+    ```python algorithm.py
+    def bubble_sort(arr):
+        n = len(arr)
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if arr[j] > arr[j+1]:
+                    arr[j], arr[j+1] = arr[j+1], arr[j]
+        return arr
+    
+    numbers = [64, 34, 25, 12, 22, 11, 90]
+    sorted_numbers = bubble_sort(numbers)
+    print(sorted_numbers)
+    ```
+    
+    **Settings**: Slow typing (0.2s) for educational value
+  </Tab>
+</Tabs>
+
+### Square Format for Instagram
+
+```python capture.py (modified)
+def record_video(source_file, output_file, duration):
+    # Instagram-friendly square format
+    screen_size = (1080, 1080)
+    
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    out = cv2.VideoWriter(
+        output_file + '.avi',
+        fourcc,
+        30.0,
+        screen_size
+    )
+    
+    # ... rest of code ...
+    
+    mockup = VSCodeMockup(width=1080, height=1080)
+    mockup.simulate_typing(code, out, delay=0.05)  # Fast for social
+```
+
+## Documentation Example
+
+Create videos for documentation showing code implementation.
+
+### API Integration Example
+
+```python api_example.py
+import requests
+import json
+
+def fetch_user_data(user_id):
+    """
+    Fetch user data from the API
+    """
+    url = f"https://api.example.com/users/{user_id}"
+    headers = {
+        "Authorization": "Bearer YOUR_TOKEN",
+        "Content-Type": "application/json"
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching user data: {e}")
+        return None
+
+if __name__ == "__main__":
+    user = fetch_user_data(123)
+    if user:
+        print(f"User: {user['name']}")
+        print(f"Email: {user['email']}")
+```
+
+**Best for**: Developer documentation, API guides, integration tutorials
+
+## Live Coding Session Recording
+
+Simulate a live coding session with realistic pacing.
+
+### Building a Class Example
+
+```python class_example.py
+class BankAccount:
+    def __init__(self, account_holder, initial_balance=0):
+        self.account_holder = account_holder
+        self.balance = initial_balance
+        self.transactions = []
+    
+    def deposit(self, amount):
+        if amount > 0:
+            self.balance += amount
+            self.transactions.append(f"Deposit: +${amount}")
+            return True
+        return False
+    
+    def withdraw(self, amount):
+        if amount > 0 and self.balance >= amount:
+            self.balance -= amount
+            self.transactions.append(f"Withdrawal: -${amount}")
+            return True
+        return False
+    
+    def get_balance(self):
+        return self.balance
+    
+    def get_statement(self):
+        print(f"Account Holder: {self.account_holder}")
+        print(f"Current Balance: ${self.balance}")
+        print("\nTransactions:")
+        for transaction in self.transactions:
+            print(f"  {transaction}")
+
+# Usage example
+account = BankAccount("John Doe", 1000)
+account.deposit(500)
+account.withdraw(200)
+account.get_statement()
+```
+
+**Settings**: 
+```python
+mockup.simulate_typing(code, out, delay=0.12)  # Natural typing pace
+```
+
+## Different Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Portfolio Projects" icon="briefcase">
+    Showcase your code in action:
+    - Clean, well-commented code
+    - Slower typing (0.15-0.2s)
+    - Professional background
+    - 1920x1080 resolution
+  </Card>
+
+  <Card title="Code Reviews" icon="magnifying-glass">
+    Demonstrate code improvements:
+    - Show before/after
+    - Medium speed (0.1s)
+    - Comments explaining changes
+    - Focus on specific sections
+  </Card>
+
+  <Card title="Algorithm Visualization" icon="chart-line">
+    Educational algorithm content:
+    - Step-by-step implementation
+    - Slow typing (0.2s+)
+    - Descriptive comments
+    - Clear variable names
+  </Card>
+
+  <Card title="Quick Tips" icon="lightbulb">
+    Short, impactful tips:
+    - 5-10 lines max
+    - Fast typing (0.05s)
+    - Square format
+    - Attention-grabbing
+  </Card>
+</CardGroup>
+
+## Tips for Best Results
+
+### Code Preparation
+
+<Steps>
+  <Step title="Format Your Code">
+    Ensure your source code is properly formatted:
+    ```bash
+    # Use a formatter like black for Python
+    black your_file.py
+    ```
+  </Step>
+
+  <Step title="Add Comments">
+    Include helpful comments for educational content:
+    ```python
+    # This validates user input
+    def validate_email(email):
+        # Check for @ symbol and domain
+        return '@' in email and '.' in email.split('@')[1]
+    ```
+  </Step>
+
+  <Step title="Keep It Concise">
+    Shorter code works better:
+    - 10-30 lines: Ideal for social media
+    - 30-100 lines: Good for tutorials
+    - 100+ lines: Consider breaking into sections
+  </Step>
+
+  <Step title="Test Timing">
+    Calculate expected duration:
+    ```
+    Characters in file: 500
+    Delay: 0.1s per character
+    Expected duration: 50 seconds
+    ```
+  </Step>
+</Steps>
+
+### Video Optimization
+
+<Tabs>
+  <Tab title="For YouTube">
+    - Resolution: 1920x1080 (Full HD)
+    - Typing speed: 0.1-0.15s
+    - Longer content acceptable
+    - Add context with comments
+  </Tab>
+
+  <Tab title="For Twitter/X">
+    - Resolution: 1280x720
+    - Typing speed: 0.05-0.08s (fast!)
+    - Keep under 2:20 (140 seconds)
+    - Punchy, attention-grabbing
+  </Tab>
+
+  <Tab title="For Instagram">
+    - Resolution: 1080x1080 (square)
+    - Typing speed: 0.05-0.08s
+    - Keep under 60 seconds
+    - Visual appeal is key
+  </Tab>
+
+  <Tab title="For LinkedIn">
+    - Resolution: 1920x1080 or 1280x720
+    - Typing speed: 0.1-0.12s
+    - Professional content
+    - Educational value
+  </Tab>
+</Tabs>
+
+### Common Patterns
+
+#### Pattern 1: Before/After Comparison
+
+Create two videos showing code improvement:
+
+```python before.py
+# Inefficient approach
+def find_duplicates(items):
+    duplicates = []
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):
+            if items[i] == items[j] and items[i] not in duplicates:
+                duplicates.append(items[i])
+    return duplicates
+```
+
+```python after.py
+# Optimized approach
+def find_duplicates(items):
+    seen = set()
+    duplicates = set()
+    for item in items:
+        if item in seen:
+            duplicates.add(item)
+        seen.add(item)
+    return list(duplicates)
+```
+
+#### Pattern 2: Progressive Building
+
+Show code being built step by step (create multiple videos):
+
+```python step1_basic.py
+def calculate_total(items):
+    return sum(items)
+```
+
+```python step2_with_tax.py
+def calculate_total(items, tax_rate=0.08):
+    subtotal = sum(items)
+    tax = subtotal * tax_rate
+    return subtotal + tax
+```
+
+```python step3_complete.py
+def calculate_total(items, tax_rate=0.08, discount=0):
+    subtotal = sum(items)
+    discounted = subtotal * (1 - discount)
+    tax = discounted * tax_rate
+    return discounted + tax
+```
+
+#### Pattern 3: Error to Fix
+
+Show debugging process:
+
+```python with_bug.py
+def divide_numbers(a, b):
+    return a / b  # Bug: No zero check!
+
+result = divide_numbers(10, 0)  # Crashes!
+```
+
+```python fixed.py
+def divide_numbers(a, b):
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+try:
+    result = divide_numbers(10, 0)
+except ValueError as e:
+    print(f"Error: {e}")
+```
+
+## Post-Production Tips
+
+<Note>
+  The simulator outputs AVI files. You may want to convert them for web use:
+</Note>
+
+```bash Convert to MP4
+# Using ffmpeg
+ffmpeg -i demo.avi -c:v libx264 -crf 23 -preset medium -c:a aac demo.mp4
+
+# For social media (compressed)
+ffmpeg -i demo.avi -c:v libx264 -crf 28 -preset fast demo_compressed.mp4
+
+# For GIF (short clips only)
+ffmpeg -i demo.avi -vf "fps=10,scale=800:-1" demo.gif
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Basic Usage" icon="play" href="/guides/basic-usage">
+    Review the basics of running the simulator
+  </Card>
+  
+  <Card title="Customization" icon="palette" href="/guides/customization">
+    Customize colors and appearance for your brand
+  </Card>
+</CardGroup>

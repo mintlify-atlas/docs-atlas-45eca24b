@@ -1,0 +1,321 @@
+---
+title: Configuration
+description: Configure window size, typing speed, fonts, and other settings in VSCode Typing Simulator
+---
+
+## Overview
+
+VSCode Typing Simulator provides several configuration options to customize your typing simulation videos. All configuration is done by modifying parameters in the Python code.
+
+## Window Size Configuration
+
+The VSCode window size is configured through the `VSCodeMockup` class initialization:
+
+```python vscode_mockup.py
+class VSCodeMockup:
+    def __init__(self, width=1280, height=720):
+        pygame.init()
+        self.width = width
+        self.height = height
+        self.screen = pygame.display.set_mode((width, height))
+```
+
+### Default Values
+
+- **Width**: `1280` pixels
+- **Height**: `720` pixels (HD resolution)
+
+### Changing Window Size
+
+To use a different resolution, modify the initialization in `capture.py`:
+
+<CodeGroup>
+```python Default (1280x720)
+mockup = VSCodeMockup()
+```
+
+```python Full HD (1920x1080)
+mockup = VSCodeMockup(width=1920, height=1080)
+```
+
+```python Square Format (1080x1080)
+mockup = VSCodeMockup(width=1080, height=1080)
+```
+
+```python 4K (3840x2160)
+mockup = VSCodeMockup(width=3840, height=2160)
+```
+</CodeGroup>
+
+<Warning>
+  Larger resolutions will increase processing time and file size significantly.
+</Warning>
+
+## Typing Speed Configuration
+
+The typing speed determines how fast characters appear in the simulation.
+
+### Default Typing Speed
+
+```python vscode_mockup.py
+def simulate_typing(self, text, video_writer, delay=0.1):
+    for char in text:
+        # ... rendering code ...
+        time.sleep(delay)
+```
+
+- **Default delay**: `0.1` seconds per character
+- **Effective speed**: 10 characters per second
+- **Lines per minute**: Approximately 30-40 (depending on line length)
+
+### Adjusting Typing Speed
+
+Modify the `delay` parameter when calling `simulate_typing`:
+
+<CodeGroup>
+```python Faster (0.05s)
+mockup.simulate_typing(code, out, delay=0.05)  # 20 chars/sec
+```
+
+```python Default (0.1s)
+mockup.simulate_typing(code, out, delay=0.1)   # 10 chars/sec
+```
+
+```python Slower (0.2s)
+mockup.simulate_typing(code, out, delay=0.2)   # 5 chars/sec
+```
+
+```python Very Slow (0.5s)
+mockup.simulate_typing(code, out, delay=0.5)   # 2 chars/sec
+```
+</CodeGroup>
+
+<Note>
+  The delay applies to every character, including whitespace and newlines. A lower delay creates faster typing, while a higher delay makes it more deliberate.
+</Note>
+
+## Font Size Settings
+
+Font configuration affects both the code text and UI elements.
+
+### Code Font Size
+
+```python vscode_mockup.py
+try:
+    font_path = './media/CascadiaCode.ttf'
+    self.font = pygame.font.Font(font_path, 14)
+except:
+    print("Could not load Cascadia Code, using fallback font")
+    self.font = pygame.font.SysFont('Consolas', 14)
+```
+
+- **Default size**: `14` pixels
+- **Font**: Cascadia Code (or Consolas fallback)
+
+### Title Bar Font
+
+```python vscode_mockup.py
+self.title_font = pygame.font.SysFont('Segoe UI', 12)
+```
+
+- **Default size**: `12` pixels
+- **Font**: Segoe UI
+
+### Changing Font Sizes
+
+Modify the font initialization in `VSCodeMockup.__init__`:
+
+<CodeGroup>
+```python Larger Code Font (18px)
+self.font = pygame.font.Font(font_path, 18)
+```
+
+```python Smaller Code Font (12px)
+self.font = pygame.font.Font(font_path, 12)
+```
+
+```python Larger Title (14px)
+self.title_font = pygame.font.SysFont('Segoe UI', 14)
+```
+</CodeGroup>
+
+<Warning>
+  Changing font size may require adjusting `line_height` and `char_width` for proper spacing.
+</Warning>
+
+## Window Margins and Dimensions
+
+The VSCode window is positioned with margins from the desktop edges.
+
+### Margin Configuration
+
+```python vscode_mockup.py
+# VSCode window dimensions
+self.window_margin = 100
+self.title_bar_height = 30
+self.window_width = width - (self.window_margin * 2)
+self.window_height = height - (self.window_margin * 1.5)
+```
+
+### Default Values
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| `window_margin` | `100` | Distance from screen edges (left/right) |
+| `title_bar_height` | `30` | Height of the title bar |
+| `window_width` | `width - 200` | Calculated: screen width minus margins |
+| `window_height` | `height - 150` | Calculated: screen height minus 1.5× margin |
+
+### Text Layout Settings
+
+```python vscode_mockup.py
+self.line_height = 20
+self.char_width = 8
+self.left_margin = 50
+```
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| `line_height` | `20` | Vertical spacing between lines |
+| `char_width` | `8` | Approximate character width |
+| `left_margin` | `50` | Space for line numbers |
+
+### Customizing Layout
+
+To adjust the window positioning and spacing:
+
+```python Custom Margins Example
+# Larger desktop margins for more background visibility
+self.window_margin = 150
+
+# Taller title bar
+self.title_bar_height = 40
+
+# More compact line spacing
+self.line_height = 18
+
+# Wider left margin for larger line numbers
+self.left_margin = 60
+```
+
+## Window Control Buttons
+
+The macOS-style window control buttons can be configured:
+
+```python vscode_mockup.py
+# Window control buttons colors
+self.close_button_color = (232, 17, 35)
+self.minimize_button_color = (255, 185, 0)
+self.maximize_button_color = (0, 204, 0)
+```
+
+Button rendering settings:
+
+```python vscode_mockup.py:draw_window_buttons
+button_size = 12
+button_margin = 8
+```
+
+- **Button diameter**: `12` pixels
+- **Button spacing**: `8` pixels between buttons
+
+## Video Output Settings
+
+The video encoding is configured in `capture.py`:
+
+```python capture.py
+def record_video(source_file, output_file, duration):
+    # Configure video capture
+    screen_size = (1280, 720)  # Fixed size for mockup
+    
+    # Use MJPG with AVI format for better compatibility
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    out = cv2.VideoWriter(
+        output_file + '.avi',
+        fourcc,
+        30.0,
+        screen_size
+    )
+```
+
+### Video Parameters
+
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| **Codec** | `MJPG` | Motion JPEG codec |
+| **Frame Rate** | `30.0` | Frames per second |
+| **Format** | `AVI` | Container format |
+| **Resolution** | `(1280, 720)` | Video dimensions |
+
+<Note>
+  The `screen_size` in `record_video` should match the `VSCodeMockup` dimensions for proper recording.
+</Note>
+
+## Configuration Example
+
+Here's a complete example with custom configuration:
+
+```python capture.py (modified)
+def record_video(source_file, output_file, duration):
+    # Custom high-res configuration
+    screen_size = (1920, 1080)
+    
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    out = cv2.VideoWriter(
+        output_file + '.avi',
+        fourcc,
+        30.0,
+        screen_size
+    )
+    
+    if not out.isOpened():
+        print("Error: Could not initialize video recording.")
+        return
+        
+    print("Recording started successfully")
+    
+    try:
+        with open(source_file, 'r', encoding='utf-8') as file:
+            code = file.read()
+        
+        # Custom mockup with larger window and faster typing
+        mockup = VSCodeMockup(width=1920, height=1080)
+        mockup.simulate_typing(code, out, delay=0.05)
+            
+    finally:
+        out.release()
+        cv2.destroyAllWindows()
+        pygame.quit()
+```
+
+## Best Practices
+
+<Steps>
+  <Step title="Match Dimensions">
+    Ensure `screen_size` in `record_video` matches the `VSCodeMockup` dimensions
+  </Step>
+
+  <Step title="Test Typing Speed">
+    Start with the default 0.1s delay and adjust based on your content length
+  </Step>
+
+  <Step title="Consider File Size">
+    Larger resolutions and longer videos create much larger file sizes
+  </Step>
+
+  <Step title="Font Size Scaling">
+    When changing resolution, consider scaling font sizes proportionally
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Customization" icon="palette" href="/guides/customization">
+    Customize colors, backgrounds, and visual styling
+  </Card>
+  
+  <Card title="Examples" icon="code" href="/guides/examples">
+    See real-world examples and use cases
+  </Card>
+</CardGroup>
