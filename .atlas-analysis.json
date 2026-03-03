@@ -1,0 +1,64 @@
+{
+  "projectType": "general",
+  "projectName": "VSCode Typing Simulator",
+  "projectDescription": "A Python application that creates video simulations of code being typed in a Visual Studio Code-like interface with a Windows XP-style background.",
+  "theme": "palm",
+  "primaryColor": "#007ACC",
+  "lightColor": "#00A4EF",
+  "darkColor": "#005A9E",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/basic-usage",
+              "guides/configuration",
+              "guides/customization",
+              "guides/examples"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Core Modules",
+            "pages": [
+              "api/vscode-mockup",
+              "api/capture"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "VSCode-like interface simulation with realistic window chrome",
+    "Windows XP-style desktop background rendering",
+    "Customizable typing speed and animation",
+    "Line numbers and syntax highlighting support",
+    "AVI video output with configurable resolution",
+    "Pygame-based rendering engine"
+  ],
+  "publicApiSurface": [
+    "VSCodeMockup.__init__(width, height)",
+    "VSCodeMockup.simulate_typing(text, video_writer, delay)",
+    "VSCodeMockup.capture_frame()",
+    "VSCodeMockup.write_char(char)",
+    "VSCodeMockup.draw_window_chrome()",
+    "VSCodeMockup.draw_line_numbers()",
+    "record_video(source_file, output_file, duration)"
+  ]
+}
